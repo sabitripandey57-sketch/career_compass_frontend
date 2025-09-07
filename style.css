@@ -1,0 +1,451 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+:root {
+    --primary-text-color: #183b56;
+    --secondary-text-color: #577592;
+    --accent-color: #2294ed;
+    --accent-color-dark: #1d69ed;
+    --padding-inline-section: 20px;
+}
+
+a {
+    text-decoration: none;
+    display: inline-block;
+}
+
+.outer-box{
+    width: 100vw;
+    height: 100vh;
+    background-color: rgb(106, 175, 235);
+
+}
+
+.inner-box{
+    width: 400px;
+    margin: 0 auto;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+padding: 20px 40px;
+background-color:white;
+border-radius: 8px;
+}
+
+.signup-header h1{
+    font-size: 2.5rem;
+    color: #212121;
+}
+
+.signup-header p{
+    font-size: 0.8rem;
+    color: #555
+}
+
+.signup-body{
+    margin: 20px 0;
+
+}
+
+.signup-body p {
+    margin: 10px 0;
+}
+
+.signup-body p label{
+    display: block;
+    font-weight: bold;
+}
+
+.signup-body p input{
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #cccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    margin-top: 4px;
+}
+
+
+.signup-body p input[type = "submit"] {
+    background-color: #3498db;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.signup-body p input[type = "submit"]:hover{
+    background-color: #09629d;
+}
+
+.signup-footer p{
+    color: #555;
+    text-align: center;
+
+}
+
+.signup-footer p a{
+    color:#09629d ;
+}
+
+
+/* for login */
+
+.login-header h1{
+     font-size: 2.5rem;
+    color: #212121;
+}
+
+.login-body{
+  margin: 20px 0;   
+}
+
+.login-body p{
+    margin: 10px 0;
+}
+
+.login-body p label{
+     display: block;
+    font-weight: bold;
+}
+
+.login-body p input{
+  width: 100%;
+    padding: 10px;
+    border: 2px solid #cccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    margin-top: 4px;   
+}
+
+.login-body p a {
+     color:#09629d;
+}
+
+.login-body p input[type = "submit"] {
+     background-color: #3498db;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.login-body p input[type = "submit"]:hover{
+    background-color: #09629d;
+}
+
+.login-footer p{
+    color: #555;
+    text-align: center;
+
+}
+
+.login-footer p a{
+    color:#09629d;
+}
+
+/* style for forgot password page */
+
+.password-header {
+    font-size: 1rem;
+    color: #212121;
+}
+
+.password-body {
+    margin: 20px 0;
+}
+
+.password-body p {
+    margin: 10px 0;
+}
+
+.password-body p label {
+    display: block;
+}
+
+.password-body p input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #cccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    margin-top: 4px;
+}
+
+.password-body p input[type = "submit"] {
+    background-color: #3498db;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.password-body p input[type = "submit"]:hover {
+    background-color: #09629d;
+}
+
+
+/* style for home page */
+
+.container {
+    max-width: 1180px;
+    margin-inline: auto;
+    padding-inline: var(--padding-inline-section);
+    display: flex;
+    
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+}
+
+ul {
+    list-style: none;
+}
+
+.lists{
+    display: flex;
+   flex-direction:row-reverse;
+   justify-content: end;
+   gap: 40px;
+   flex-basis: 730px;
+}
+
+.hover-link {
+    color: var(--primary-text-color);
+    transition: 0.2s ease-out;
+}
+
+.hover-link:hover {
+    color: #09629d
+}
+
+
+.banner-text {
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    padding: 15px 30px;
+    text-align: center;
+}
+
+.top-banner{
+    background-color: #46a0e5;
+}
+
+.logo img {
+    width: 150px;
+}
+
+.main-nav {
+    justify-content: space-between;
+    margin-top: 20px;
+
+}
+
+.nav-link {
+    flex-basis: 730px;
+}
+
+.nav-link ul {
+    justify-content: end;
+    gap: 40px;
+}
+
+.primary-button {
+    background-color: var(--accent-color);
+    border-radius: 6px;
+    font-weight: 700;
+    color: white !important;
+    padding: 12px 24px;
+    box-shadow: 0 0 2px var(--secondary-text-color);
+    transition: 0.2s ease-out;
+}
+
+.primary-button:hover {
+    background-color: var(--accent-color-dark);
+}
+
+.secondary-button {
+    border: 0.5px solid var(--secondary-text-color);
+    border-radius: 6px;
+    font-weight: 700;
+    color: var(--primary-text-color) !important;
+    padding: 12px 24px;
+    transition: 0.2s ease-out;
+}
+
+.secondary-button:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color) !important;
+}
+
+header {
+    padding: 70px var(--padding-inline-section) 0;
+}
+
+.header-section {
+    justify-content: center;
+    gap: 50px;
+}
+
+.header-left {
+    max-width: 40vw;
+}
+
+.header-left h1 {
+    margin-top: 20px;
+}
+
+.header-right img{
+    width: 400px;
+}
+
+
+.working {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.working-paragraph {
+text-align: center;
+font-size: 0.9rem;
+color: #555;
+}
+
+.choosing-section {
+    padding: 80px var(--padding-inline-section);
+}
+
+.choose {
+    gap: 50px;
+    justify-content: center;
+}
+
+.choose-left{
+    margin-top: 50px;
+    border: 0.5px solid black;
+    padding: 20px;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.choose-right {
+    margin-top: 50px;
+     border: 0.5px solid black;
+     padding: 20px;
+     flex-direction: column;
+     gap: 20px;
+}
+
+.choose-button {
+    align-content: center;
+}
+
+
+.dream {
+  background-color: #46a0e5;   
+  font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    padding: 15px 30px;
+    text-align: center;
+     padding: 80px var(--padding-inline-section);
+     margin-top: 50px;
+     gap: 50px;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.dream-button {
+    background-color: white !important;
+}
+
+.dream p {
+    font-size: medium;
+}
+
+.dream h1 {
+    font-size: 50px;
+    font-weight: bold;
+}
+
+/* sub footer section */
+
+.foot {
+    justify-content: space-between;
+    padding-left: 50px;
+    padding-right: 50px;
+
+}
+
+.sub-footer {
+    background-color: #183b56;
+     color: white;
+     height: 500px;
+        padding: 80px var(--padding-inline-section);
+        justify-content: center;
+}
+
+.last-one {
+    width: 400px;
+    text-align: center;
+    justify-content: start;
+        flex-direction: column;
+}
+
+
+.last-one a, .last-one p {
+        display: block;
+    margin-bottom: 20px;
+}
+
+.last-para {
+        display: block;
+    margin-bottom: 20px;
+}
+
+.last-two {
+    flex-direction: column;
+    gap: 60px;
+    text-align: center;
+    justify-content: center;
+}
+
+.last-two h1, .last-two a {
+    display: block;
+    margin-bottom: 20px;
+}
+
+.last-three {
+    flex-direction: column;
+    gap: 60px;
+    text-align: center;
+    justify-content: center;
+}
+
+.last-three h1, .last-three p {
+    display: block;
+    margin-bottom: 20px;
+}
+
+.end-logo img{
+    width: 150px;
+}
+
+.Q-link {
+    flex-direction: column;
+    color: var(--accent-color);
+    transition: 0.2s ease-out;
+}
+
+.Q-link:hover {
+    color: white;
+}
+
+.info {
+    flex-direction: column;
+}
+

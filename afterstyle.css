@@ -1,0 +1,262 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+:root {
+    --primary-text-color: #183b56;
+    --secondary-text-color: #577592;
+    --accent-color: #2294ed;
+    --accent-color-dark: #1d69ed;
+    --padding-inline-section: 20px;
+}
+
+a {
+    text-decoration: none;
+    display: inline-block;
+}
+
+.container {
+    max-width: 1180px;
+    margin-inline: auto;
+    padding-inline: var(--padding-inline-section);
+    display: flex;
+    
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+}
+
+ul {
+    list-style: none;
+}
+
+.lists{
+    display: flex;
+   flex-direction:row-reverse;
+   justify-content: end;
+   gap: 40px;
+   flex-basis: 730px;
+}
+
+.hover-link {
+    color: var(--primary-text-color);
+    transition: 0.2s ease-out;
+}
+
+.hover-link:hover {
+    color: #09629d
+}
+
+.top-banner{
+    background-color: #46a0e5;
+}
+
+.top-text {
+    font-size: 2rem;
+    font-weight: 800;
+    color: white;
+    padding: 15px 30px;
+    text-align: center;
+}
+
+.banner-text {
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    padding: 15px 30px;
+    text-align: center;
+}
+
+.top-banner{
+    background-color: #46a0e5;
+}
+
+.logo img {
+    width: 150px;
+}
+
+.main-nav {
+    justify-content: space-between;
+    margin-top: 20px;
+
+}
+
+.nav-link {
+    flex-basis: 730px;
+}
+
+.nav-link ul {
+    justify-content: end;
+    gap: 40px;
+}
+
+.primary-button {
+    background-color: var(--accent-color);
+    border-radius: 6px;
+    font-weight: 700;
+    color: white !important;
+    padding: 12px 24px;
+    box-shadow: 0 0 2px var(--secondary-text-color);
+    transition: 0.2s ease-out;
+}
+
+.primary-button:hover {
+    background-color: var(--accent-color-dark);
+}
+
+.primary-button:hover {
+    background-color: var(--accent-color-dark);
+}
+
+.secondary-button {
+    border: 0.5px solid var(--secondary-text-color);
+    border-radius: 6px;
+    font-weight: 700;
+    color: var(--primary-text-color) !important;
+    padding: 12px 24px;
+    transition: 0.2s ease-out;
+}
+
+.secondary-button:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color) !important;
+}
+
+header {
+    padding: 70px var(--padding-inline-section) 0;
+}
+
+.header-section {
+    justify-content: center;
+    gap: 50px;
+}
+
+.header-left {
+    max-width: 40vw;
+}
+
+.header-left h1 {
+    margin-top: 20px;
+}
+
+.header-right img{
+    width: 400px;
+}
+
+.sub-container {
+     max-width: 1180px;
+    margin-inline: auto;
+    padding-inline: var(--padding-inline-section);
+    justify-content: center;
+    align-items: center;
+}
+
+
+.opt-header {
+ padding: 80px var(--padding-inline-section);
+}
+
+.opt-heading-text {
+    text-align: center;
+    margin-block: 30px;
+}
+
+.opt-heading-para {
+    text-align: center;
+    color: #212121;
+}
+
+ol {
+    list-style-type: decimal;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-left: 10px;
+}
+
+.academic {
+    border: 0.5px solid black;
+    padding: 10px 20px;
+    flex-direction: column;
+    margin-bottom: 50px;
+   height: 800px;
+   width: 500px;
+   background-color: #abbfe1;
+}
+
+
+.ctevt {
+    border: 0.5px solid black;
+    padding:15px 20px;
+    flex-direction: column;
+    margin-bottom: 50px;
+   height: 800px;
+   width: 500px;
+    background-color: #abbfe1;
+}
+
+.tslc {
+    border: 0.5px solid black;
+    padding: 10px 20px;
+    flex-direction: column;
+    margin-bottom: 50px;
+   height: 800px;
+   width: 500px;
+    background-color: #abbfe1;
+}
+
+
+.creativ {
+    border: 0.5px solid black;
+     padding: 10px 20px;
+    flex-direction: column;
+    margin-bottom: 50px;
+   height: 800px;
+   width: 500px;
+    background-color: #abbfe1;
+}
+
+
+.choose-subject {
+    justify-content: space-between;
+    gap: 50px;
+}
+
+
+.choose-subject-header {
+    margin-block: 10px;
+    color:black;
+}
+
+.sub-container a {
+    align-content: center;
+}
+
+
+
+
+/* check requirement page */
+
+.requi-header {
+  margin-block: 30px;
+}
+
+.requi-header h1 {
+    margin-block: 20px;
+    background-color: var(--accent-color);
+    text-align: center;
+    color: white;
+}
+
+.requi-header h2 {
+    margin-block: 10px;
+}
+
+.requi-header p {
+margin-bottom: 5px;
+}
