@@ -3,10 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <titl> Colleges/ Universities</title>
-        <link rel="stylesheet" href="afterstyle.css">
+    <title>Colleges/ Universities</title>
+    <link rel="stylesheet" href="afterstyle.css">
+    <style>
+        .college-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .search-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .search-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .search-form input, .search-form select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-width: 200px;
+        }
+        
+        .search-form button {
+            background: #667eea;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .search-form button:hover {
+            background: #5a67d8;
+        }
+        
+        .colleges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .college-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
+            transition: transform 0.3s ease;
+        }
+        
+        .college-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .college-card h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .college-location {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+        
+        .college-contact {
+            background: #f8f9ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .college-courses {
+            margin-top: 10px;
+        }
+        
+        .course-tag {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin: 2px;
+            font-size: 0.9em;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+        }
+        
+        .pagination button {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        
+        .pagination button:hover {
+            background: #f0f0f0;
+        }
+        
+        .pagination button.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+    </style>
 </head>
 <body>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
     
      <!-- top banner -->
 
@@ -27,22 +155,181 @@
 
 <div class="nav-link">
     <ul class="flex">
-        <li><a href="index.html" class="hover-link">Home</a></li>
-         <li><a href="contact.html" class="hover-link">Contact</a></li>
-          <li><a href="help.html" class="hover-link">Help</a></li>
-           <li><a href="signup.html" class="hover-link secondary-button" >Sign up</a></li>
-            <li><a href="login.html" class="hover-link primary-button">Login</a></li>
+        <!-- Navigation will be updated by auth.js -->
     </ul>
 </div>
         </div>
     </nav>
 
 <!-- header section -->
+<div class="college-container">
+    <header>
+        <h1>Colleges and Universities in Nepal</h1>
+        <p>Explore colleges and universities based on your academic performance and preferences</p>
+    </header>
+    
+    <!-- Search Section -->
+    <div class="search-section">
+        <h3>Search Colleges</h3>
+        <div class="search-form">
+            <input type="text" id="location-search" placeholder="Search by location (e.g., Kathmandu)">
+            <button onclick="searchByLocation()">Search by Location</button>
+            <button onclick="loadAllColleges()">Show All Colleges</button>
+        </div>
+    </div>
+    
+    <!-- College Results -->
+    <div id="colleges-container">
+        <div class="loading">Loading colleges...</div>
+    </div>
+    
+    <!-- Pagination -->
+    <div id="pagination-container" class="pagination" style="display: none;"></div>
+</div>
 
-<header>
-
-</header>
-
+<script>
+    let currentPage = 1;
+    const limit = 9; // Colleges per page
+    
+    // Load colleges on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        loadAllColleges();
+    });
+    
+    async function loadAllColleges(page = 1) {
+        const container = document.getElementById('colleges-container');
+        const paginationContainer = document.getElementById('pagination-container');
+        
+        container.innerHTML = '<div class="loading">Loading colleges...</div>';
+        
+        try {
+            const response = await apiService.getAllColleges(page, limit);
+            
+            if (response.data && response.data.docs) {
+                displayColleges(response.data.docs);
+                setupPagination(response.data, page);
+            } else {
+                container.innerHTML = '<p>No colleges found.</p>';
+            }
+        } catch (error) {
+            console.error('Error loading colleges:', error);
+            container.innerHTML = `<p style="color: red;">Error loading colleges: ${error.message}</p>`;
+        }
+    }
+    
+    async function searchByLocation() {
+        const location = document.getElementById('location-search').value.trim();
+        const container = document.getElementById('colleges-container');
+        const paginationContainer = document.getElementById('pagination-container');
+        
+        if (!location) {
+            alert('Please enter a location to search');
+            return;
+        }
+        
+        container.innerHTML = '<div class="loading">Searching colleges...</div>';
+        paginationContainer.style.display = 'none';
+        
+        try {
+            const response = await apiService.searchCollegesByLocation(location);
+            
+            if (response.data && response.data.length > 0) {
+                displayColleges(response.data);
+            } else {
+                container.innerHTML = `<p>No colleges found in "${location}".</p>`;
+            }
+        } catch (error) {
+            console.error('Error searching colleges:', error);
+            container.innerHTML = `<p style="color: red;">Error searching colleges: ${error.message}</p>`;
+        }
+    }
+    
+    function displayColleges(colleges) {
+        const container = document.getElementById('colleges-container');
+        
+        if (!colleges || colleges.length === 0) {
+            container.innerHTML = '<p>No colleges found.</p>';
+            return;
+        }
+        
+        let html = '<div class="colleges-grid">';
+        
+        colleges.forEach(college => {
+            html += `
+                <div class="college-card">
+                    <h3>${college.name || 'Unnamed College'}</h3>
+                    <p class="college-location">📍 ${college.location || 'Location not specified'}</p>
+                    
+                    <div class="college-contact">
+                        <h4>Contact Information</h4>
+                        <p><strong>📞 Phone:</strong> ${college.contact?.phone || 'Not provided'}</p>
+                        <p><strong>✉️ Email:</strong> ${college.contact?.email || 'Not provided'}</p>
+                        ${college.contact?.website ? `<p><strong>🌐 Website:</strong> <a href="${college.contact.website}" target="_blank">${college.contact.website}</a></p>` : ''}
+                    </div>
+                    
+                    ${college.courses && college.courses.length > 0 ? `
+                        <div class="college-courses">
+                            <h4>Available Courses</h4>
+                            <div>
+                                ${college.courses.map(course => {
+                                    const courseName = course.course?.name || course.courseName || course.name || 'Unknown Course';
+                                    return `<span class="course-tag">${courseName}</span>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    ${college.facilities && college.facilities.length > 0 ? `
+                        <div class="college-courses">
+                            <h4>Facilities</h4>
+                            <div>
+                                ${college.facilities.map(facility => `<span class="course-tag">${facility}</span>`).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    ${college.description ? `<p><strong>About:</strong> ${college.description}</p>` : ''}
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        container.innerHTML = html;
+    }
+    
+    function setupPagination(paginationData, currentPage) {
+        const paginationContainer = document.getElementById('pagination-container');
+        
+        if (!paginationData.totalPages || paginationData.totalPages <= 1) {
+            paginationContainer.style.display = 'none';
+            return;
+        }
+        
+        let html = '';
+        
+        // Previous button
+        if (paginationData.hasPrevPage) {
+            html += `<button onclick="loadAllColleges(${paginationData.prevPage})">« Previous</button>`;
+        }
+        
+        // Page numbers
+        for (let i = 1; i <= paginationData.totalPages; i++) {
+            if (i === currentPage) {
+                html += `<button class="active">${i}</button>`;
+            } else {
+                html += `<button onclick="loadAllColleges(${i})">${i}</button>`;
+            }
+        }
+        
+        // Next button
+        if (paginationData.hasNextPage) {
+            html += `<button onclick="loadAllColleges(${paginationData.nextPage})">Next »</button>`;
+        }
+        
+        paginationContainer.innerHTML = html;
+        paginationContainer.style.display = 'flex';
+    }
+</script>
 
 </body>
 </html>

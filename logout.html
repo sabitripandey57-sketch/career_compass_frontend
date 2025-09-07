@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout - Career Compass</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .logout-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        .logout-btn {
+            background: #ff4757;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        .logout-btn:hover {
+            background: #ff3838;
+            transform: translateY(-2px);
+        }
+        .home-btn {
+            background: #2ed573;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .home-btn:hover {
+            background: #26d65d;
+            transform: translateY(-2px);
+        }
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: rgba(46, 213, 115, 0.3);
+            border: 1px solid #2ed573;
+        }
+        .info {
+            background-color: rgba(52, 152, 219, 0.3);
+            border: 1px solid #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="logout-container">
+        <h1>🔐 Logout Page</h1>
+        <p>Click the button below to logout from Career Compass:</p>
+        
+        <button id="logoutBtn" class="logout-btn">
+            🚪 Logout Now
+        </button>
+        
+        <br>
+        
+        <a href="index.html" class="home-btn">
+            🏠 Go to Home
+        </a>
+        
+        <div id="status" class="status info" style="display: none;">
+            <p id="statusMessage"></p>
+        </div>
+    </div>
+
+    <script>
+        // Function to clear all auth data
+        function logout() {
+            try {
+                // Clear localStorage
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                localStorage.removeItem('isAuthenticated');
+                
+                // Clear sessionStorage
+                sessionStorage.clear();
+                
+                // Clear cookies by setting them to expire
+                document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                document.cookie = 'user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                
+                // Show success message
+                const status = document.getElementById('status');
+                const statusMessage = document.getElementById('statusMessage');
+                statusMessage.textContent = '✅ Successfully logged out! You can now close this page or go to home.';
+                status.className = 'status success';
+                status.style.display = 'block';
+                
+                // Change button text
+                document.getElementById('logoutBtn').innerHTML = '✅ Logged Out';
+                document.getElementById('logoutBtn').disabled = true;
+                document.getElementById('logoutBtn').style.background = '#95a5a6';
+                
+                // Redirect to home after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+                
+                console.log('User logged out successfully');
+            } catch (error) {
+                console.error('Logout error:', error);
+                const status = document.getElementById('status');
+                const statusMessage = document.getElementById('statusMessage');
+                statusMessage.textContent = '⚠️ Logout completed with minor issues, but you are now logged out.';
+                status.className = 'status success';
+                status.style.display = 'block';
+            }
+        }
+
+        // Add event listener to logout button
+        document.getElementById('logoutBtn').addEventListener('click', logout);
+        
+        // Check current auth status on page load
+        window.addEventListener('load', () => {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            if (!token && !user) {
+                const status = document.getElementById('status');
+                const statusMessage = document.getElementById('statusMessage');
+                statusMessage.textContent = 'ℹ️ You are already logged out.';
+                status.className = 'status info';
+                status.style.display = 'block';
+                
+                document.getElementById('logoutBtn').innerHTML = '✅ Already Logged Out';
+                document.getElementById('logoutBtn').disabled = true;
+                document.getElementById('logoutBtn').style.background = '#95a5a6';
+            } else {
+                const status = document.getElementById('status');
+                const statusMessage = document.getElementById('statusMessage');
+                statusMessage.textContent = 'ℹ️ You are currently logged in. Click logout to sign out.';
+                status.className = 'status info';
+                status.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

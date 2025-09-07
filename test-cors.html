@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-result {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>CORS Test Page</h1>
+    <p>This page helps debug CORS issues between the frontend and backend.</p>
+    
+    <button onclick="testCORS()">Test CORS Connection</button>
+    <button onclick="testRegistration()">Test Registration</button>
+    
+    <div id="results"></div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5001/api';
+        
+        function addResult(message, isSuccess = true) {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-result ${isSuccess ? 'success' : 'error'}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            results.appendChild(div);
+        }
+        
+        async function testCORS() {
+            try {
+                addResult('Testing CORS connection...');
+                
+                const response = await fetch(`${API_BASE_URL}/test`);
+                const data = await response.json();
+                
+                addResult(`✅ CORS Test Success: ${data.message}`, true);
+                console.log('CORS test response:', data);
+            } catch (error) {
+                addResult(`❌ CORS Test Failed: ${error.message}`, false);
+                console.error('CORS test error:', error);
+            }
+        }
+        
+        async function testRegistration() {
+            try {
+                addResult('Testing registration...');
+                
+                const testUser = {
+                    name: 'Test User',
+                    email: `test${Date.now()}@example.com`,
+                    phone: '+977-9841000000',
+                    password: 'test123',
+                    totalMarks: 400,
+                    gpa: 3.5,
+                    role: 'student'
+                };
+                
+                const response = await fetch(`${API_BASE_URL}/users/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testUser)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addResult(`✅ Registration Success: ${data.message}`, true);
+                    console.log('Registration response:', data);
+                } else {
+                    addResult(`❌ Registration Failed: ${data.message}`, false);
+                    console.error('Registration error:', data);
+                }
+            } catch (error) {
+                addResult(`❌ Registration Request Failed: ${error.message}`, false);
+                console.error('Registration request error:', error);
+            }
+        }
+        
+        // Test CORS on page load
+        document.addEventListener('DOMContentLoaded', testCORS);
+    </script>
+</body>
+</html>

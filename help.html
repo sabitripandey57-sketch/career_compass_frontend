@@ -3,20 +3,77 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Help & Support</title>
+  <title>Help & Support - Career Compass</title>
+  <link rel="stylesheet" href="style.css">
   <style>
-    body { font-family: Arial, sans-serif; padding: 40px; background-color: rgb(106, 175, 235);
-; }
-    h1, h2 { color: #333; }
-    .faq { max-width: 800px; margin: auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    .question { margin-top: 20px; }
-    .question h2 { font-size: 1.2em; margin-bottom: 10px; }
-    .question p { margin: 0; }
+    .help-container { 
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+    }
+    .faq { 
+        max-width: 800px; 
+        margin: auto; 
+        background: #fff; 
+        padding: 40px; 
+        border-radius: 15px; 
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        margin-top: 20px;
+    }
+    .question { 
+        margin-top: 30px;
+        padding: 20px;
+        background: #f8f9ff;
+        border-radius: 10px;
+        border-left: 4px solid #667eea;
+    }
+    .question h2 { 
+        font-size: 1.3em; 
+        margin-bottom: 15px;
+        color: #333;
+    }
+    .question p { 
+        margin: 0;
+        line-height: 1.6;
+        color: #555;
+    }
+    .question a {
+        color: #667eea;
+        text-decoration: none;
+    }
+    .question a:hover {
+        text-decoration: underline;
+    }
+  </style>
   </style>
 </head>
 <body>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    
+    <!-- top banner -->
+    <div class="top-banner">
+        <div>
+            <div class="banner-text">Help & Support - Career Compass</div>
+        </div>
+    </div>
 
-  <div class="faq">
+    <!-- nav bar -->
+    <nav>
+        <div class="container main-nav flex">
+            <a href="#" class="logo">
+                <img src="/images/mylogo.png" alt="">
+            </a>
+            <div class="nav-link">
+                <ul class="flex">
+                    <!-- Navigation will be updated by auth.js -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+  <div class="help-container">
+    <div class="faq">
     <h1>Help & Support</h1>
 
     <div class="question">
@@ -37,6 +94,7 @@
     <div class="question">
       <h2>Still need help?</h2>
       <p>Email us directly at <a href="mailto:sabitripandey@gmail.com">sabitripandey@gmail.com</a>.</p>
+    </div>
     </div>
   </div>
 

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Career Compass</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+        
+        .dashboard-card h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .feature-button {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+        
+        .feature-button:hover {
+            background: #5a67d8;
+        }
+        
+        .search-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .search-form input, .search-form select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .search-form button {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .search-form button:hover {
+            background: #5a67d8;
+        }
+        
+        .results-container {
+            margin-top: 20px;
+        }
+        
+        .college-card {
+            background: #f8f9ff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .college-card h4 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .college-card .location {
+            color: #666;
+            font-style: italic;
+        }
+        
+        .college-card .match-score {
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        .profile-info {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    
+    <!-- top banner -->
+    <div class="top-banner">
+        <div>
+            <div class="banner-text">Career Compass Dashboard</div>
+        </div>
+    </div>
+
+    <!-- nav bar -->
+    <nav>
+        <div class="container main-nav flex">
+            <a href="#" class="logo">
+                <img src="/images/mylogo.png" alt="">
+            </a>
+            <div class="nav-link">
+                <ul class="flex">
+                    <!-- Navigation will be updated by auth.js -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <h1>Welcome to Your Dashboard</h1>
+            <p id="user-greeting">Loading your profile...</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Profile Card -->
+            <div class="dashboard-card">
+                <h3>Your Profile</h3>
+                <div id="profile-info" class="profile-info">
+                    <p>Loading profile information...</p>
+                </div>
+                <a href="#" class="feature-button" onclick="showUpdateProfileForm()">Update Profile</a>
+                <a href="#" class="feature-button" onclick="showMarksForm()">Add/Update Marks</a>
+            </div>
+
+            <!-- College Search Card -->
+            <div class="dashboard-card">
+                <h3>Find Your Ideal Colleges</h3>
+                <p>Search for colleges based on your marks and preferences</p>
+                <div class="search-form">
+                    <input type="number" id="search-total-marks" placeholder="Total Marks (optional)" min="0" max="500">
+                    <input type="number" id="search-gpa" placeholder="GPA (optional)" min="0" max="4" step="0.1">
+                    <button onclick="searchColleges()">Search Colleges</button>
+                    <button onclick="getRecommendations()">Get Personalized Recommendations</button>
+                </div>
+                <div id="college-results" class="results-container"></div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="dashboard-card">
+                <h3>Quick Actions</h3>
+                <a href="college.html" class="feature-button">Browse All Colleges</a>
+                <a href="AfterSEE.html" class="feature-button">After SEE Options</a>
+                <a href="Afterinter.html" class="feature-button">After +2 Options</a>
+                <a href="checkrequirement.html" class="feature-button">Check Requirements</a>
+            </div>
+
+            <!-- Analytics Card -->
+            <div class="dashboard-card">
+                <h3>Your Academic Analytics</h3>
+                <div id="analytics-container">
+                    <button onclick="loadAnalytics()" class="feature-button">Load Analytics</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        if (!authManager.requireAuth()) {
+            // User is not logged in, redirect happens in requireAuth
+        }
+
+        let currentUser = null;
+        let userMarks = [];
+
+        // Load user profile on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadUserProfile();
+            await loadUserMarks();
+            
+            // Add temporary visible logout button
+            addVisibleLogoutButton();
+        });
+        
+        function addVisibleLogoutButton() {
+            console.log('🔍 Adding visible logout button to dashboard...');
+            const logoutButtonDiv = document.createElement('div');
+            logoutButtonDiv.innerHTML = `
+                <div style="position: fixed; top: 10px; right: 10px; z-index: 9999; 
+                            background: white; padding: 10px; border-radius: 10px; 
+                            box-shadow: 0 2px 10px rgba(0,0,0,0.2); border: 2px solid #667eea;">
+                    <p style="margin: 0 0 10px 0; font-weight: bold; color: #333; font-size: 14px;">
+                        📊 Dashboard Controls
+                    </p>
+                    <button onclick="logoutUser()" 
+                            style="background: #ff4757; color: white; padding: 6px 12px; 
+                                   border: none; border-radius: 4px; cursor: pointer; font-weight: bold; 
+                                   margin-right: 5px; font-size: 12px;">
+                        🚪 Logout
+                    </button>
+                    <button onclick="window.location.href='index.html'" 
+                            style="background: #3498db; color: white; padding: 6px 12px; 
+                                   border: none; border-radius: 4px; cursor: pointer; font-weight: bold;
+                                   font-size: 12px;">
+                        🏠 Home
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(logoutButtonDiv);
+            
+            // Add logout function
+            window.logoutUser = function() {
+                console.log('🚪 Logout clicked from dashboard');
+                localStorage.removeItem('token');
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('refreshToken');
+                localStorage.removeItem('user');
+                localStorage.removeItem('isAuthenticated');
+                sessionStorage.clear();
+                
+                alert('✅ Logged out successfully!');
+                window.location.href = 'index.html';
+            };
+        }
+
+        async function loadUserProfile() {
+            try {
+                const response = await apiService.getCurrentUser();
+                currentUser = response.data;
+                
+                document.getElementById('user-greeting').textContent = 
+                    `Hello, ${currentUser.name}! Ready to explore your career options?`;
+                
+                document.getElementById('profile-info').innerHTML = `
+                    <p><strong>Name:</strong> ${currentUser.name}</p>
+                    <p><strong>Email:</strong> ${currentUser.email}</p>
+                    <p><strong>Phone:</strong> ${currentUser.phone || 'Not provided'}</p>
+                    <p><strong>Total Marks:</strong> ${currentUser.totalMarks || 'Not provided'}</p>
+                    <p><strong>GPA:</strong> ${currentUser.gpa || 'Not provided'}</p>
+                `;
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showError('Error loading profile: ' + error.message);
+            }
+        }
+
+        async function loadUserMarks() {
+            try {
+                const response = await apiService.getMyMarks();
+                userMarks = response.data || [];
+            } catch (error) {
+                console.error('Error loading marks:', error);
+            }
+        }
+
+        async function searchColleges() {
+            const totalMarks = document.getElementById('search-total-marks').value;
+            const gpa = document.getElementById('search-gpa').value;
+            const resultsContainer = document.getElementById('college-results');
+            
+            resultsContainer.innerHTML = '<div class="loading">Searching colleges...</div>';
+            
+            try {
+                const response = await apiService.searchCollegesByMarks(
+                    totalMarks ? parseInt(totalMarks) : null,
+                    gpa ? parseFloat(gpa) : null
+                );
+                
+                displayCollegeResults(response.data, resultsContainer);
+            } catch (error) {
+                console.error('Error searching colleges:', error);
+                resultsContainer.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+
+        async function getRecommendations() {
+            const resultsContainer = document.getElementById('college-results');
+            
+            resultsContainer.innerHTML = '<div class="loading">Getting personalized recommendations...</div>';
+            
+            try {
+                const response = await apiService.getRecommendedColleges();
+                displayCollegeResults(response.data, resultsContainer, true);
+            } catch (error) {
+                console.error('Error getting recommendations:', error);
+                resultsContainer.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+
+        function displayCollegeResults(data, container, isRecommendation = false) {
+            const colleges = data.colleges || [];
+            
+            if (colleges.length === 0) {
+                container.innerHTML = '<p>No colleges found matching your criteria.</p>';
+                return;
+            }
+            
+            let html = `<h4>${isRecommendation ? 'Personalized Recommendations' : 'Search Results'}</h4>`;
+            
+            colleges.forEach(college => {
+                const matchScore = college.matchPercentage || college.recommendationScore || 0;
+                html += `
+                    <div class="college-card">
+                        <h4>${college.name}</h4>
+                        <p class="location">📍 ${college.location}</p>
+                        <div class="match-score">Match: ${matchScore}%</div>
+                        <p><strong>Contact:</strong> ${college.contact?.phone || 'N/A'}</p>
+                        <p><strong>Email:</strong> ${college.contact?.email || 'N/A'}</p>
+                        ${college.eligibleCourses && college.eligibleCourses.length > 0 ? 
+                            `<p><strong>Available Courses:</strong> ${college.eligibleCourses.map(ec => ec.course?.name || ec.courseName).join(', ')}</p>` : 
+                            ''
+                        }
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        async function loadAnalytics() {
+            const analyticsContainer = document.getElementById('analytics-container');
+            analyticsContainer.innerHTML = '<div class="loading">Loading analytics...</div>';
+            
+            try {
+                const [gpaResponse, analyticsResponse] = await Promise.all([
+                    apiService.calculateGPA(),
+                    apiService.getAnalytics()
+                ]);
+                
+                const gpaData = gpaResponse.data;
+                const analyticsData = analyticsResponse.data;
+                
+                analyticsContainer.innerHTML = `
+                    <div class="profile-info">
+                        <h4>GPA Information</h4>
+                        <p><strong>Current GPA:</strong> ${gpaData.currentGPA}</p>
+                        <p><strong>Total Credits:</strong> ${gpaData.totalCredits}</p>
+                        <p><strong>Total Subjects:</strong> ${gpaData.totalSubjects}</p>
+                    </div>
+                    <div class="profile-info">
+                        <h4>Subject-wise Performance</h4>
+                        ${analyticsData.subjectAnalytics ? analyticsData.subjectAnalytics.map(subject => `
+                            <p><strong>${subject._id}:</strong> ${subject.averageGrade} (${subject.count} entries)</p>
+                        `).join('') : '<p>No analytics data available</p>'}
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+                analyticsContainer.innerHTML = `<p style="color: red;">Error loading analytics: ${error.message}</p>`;
+            }
+        }
+
+        function showUpdateProfileForm() {
+            // This could be implemented as a modal or redirect to a separate page
+            const newName = prompt('Enter new name:', currentUser?.name || '');
+            const newPhone = prompt('Enter new phone:', currentUser?.phone || '');
+            const newTotalMarks = prompt('Enter total marks:', currentUser?.totalMarks || '');
+            const newGPA = prompt('Enter GPA:', currentUser?.gpa || '');
+            
+            if (newName && newPhone) {
+                updateProfile({
+                    name: newName,
+                    phone: newPhone,
+                    totalMarks: newTotalMarks ? parseInt(newTotalMarks) : undefined,
+                    gpa: newGPA ? parseFloat(newGPA) : undefined
+                });
+            }
+        }
+
+        async function updateProfile(profileData) {
+            try {
+                await apiService.updateProfile(profileData);
+                showSuccess('Profile updated successfully!');
+                await loadUserProfile();
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showError('Error updating profile: ' + error.message);
+            }
+        }
+
+        function showMarksForm() {
+            const subject = prompt('Enter subject name:');
+            const grade = prompt('Enter grade (A+, A, B+, B, C+, C, D+, D, E):');
+            const gradePoint = prompt('Enter grade point (0.0 - 4.0):');
+            
+            if (subject && grade && gradePoint) {
+                addMark({
+                    subject: subject,
+                    grade: grade,
+                    gradePoint: parseFloat(gradePoint)
+                });
+            }
+        }
+
+        async function addMark(markData) {
+            try {
+                await apiService.addMyMark(markData);
+                showSuccess('Mark added successfully!');
+                await loadUserMarks();
+            } catch (error) {
+                console.error('Error adding mark:', error);
+                showError('Error adding mark: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

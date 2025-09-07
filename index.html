@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
     
     <!-- top banner -->
     <div class="top-banner">
@@ -24,12 +26,17 @@
 </a>
 
 <div class="nav-link">
-    <ul class="flex">
+    <ul class="flex" id="navigation-menu">
+        <!-- Navigation will be populated by auth.js -->
         <li><a href="index.html" class="hover-link">Home</a></li>
-         <li><a href="contact.html" class="hover-link">Contact</a></li>
-          <li><a href="help.html" class="hover-link">Help</a></li>
-           <li><a href="signup.html" class="hover-link secondary-button" >Sign up</a></li>
-            <li><a href="login.html" class="hover-link primary-button">Login</a></li>
+        <li><a href="college.html" class="hover-link">Colleges</a></li>
+        <li><a href="AfterSEE.html" class="hover-link">After SEE</a></li>
+        <li><a href="Afterinter.html" class="hover-link">After +2</a></li>
+        <li><a href="checkrequirement.html" class="hover-link">Requirements</a></li>
+        <li><a href="contact.html" class="hover-link">Contact</a></li>
+        <li><a href="help.html" class="hover-link">Help</a></li>
+        <li><a href="signup.html" class="hover-link secondary-button" >Sign up</a></li>
+        <li><a href="login.html" class="hover-link primary-button">Login</a></li>
     </ul>
 </div>
         </div>
@@ -96,7 +103,7 @@
 
     <p>Join thousands of students who have found their perfect educational path with CareerCompass</p>
 
-    <a href="#" class="secondary-button dream-button">Start Your Journey</a>
+    <a href="#" class="secondary-button dream-button" onclick="startJourney()">Start Your Journey</a>
 
 </div>
 </section>
@@ -144,5 +151,80 @@
 
         </div>
     </footer>
+    
+    <script>
+        function startJourney() {
+            const isLoggedIn = localStorage.getItem('token') && localStorage.getItem('user');
+            if (isLoggedIn) {
+                window.location.href = 'dashboard.html';
+            } else {
+                window.location.href = 'signup.html';
+            }
+        }
+        
+        // Add temporary logout button for logged in users
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔍 Checking login status on index page...');
+            const token = localStorage.getItem('token') || localStorage.getItem('accessToken');
+            const user = localStorage.getItem('user');
+            
+            if (token && user) {
+                console.log('👤 User is logged in, adding logout button');
+                // Add visible logout button for logged in users
+                const logoutButtonDiv = document.createElement('div');
+                logoutButtonDiv.innerHTML = `
+                    <div style="position: fixed; top: 10px; right: 10px; z-index: 9999; 
+                                background: white; padding: 10px; border-radius: 10px; 
+                                box-shadow: 0 2px 10px rgba(0,0,0,0.2); border: 2px solid #667eea;">
+                        <p style="margin: 0 0 10px 0; font-weight: bold; color: #333;">
+                            👋 Hello! You are logged in.
+                        </p>
+                        <button onclick="logoutUser()" 
+                                style="background: #ff4757; color: white; padding: 8px 15px; 
+                                       border: none; border-radius: 5px; cursor: pointer; font-weight: bold; 
+                                       margin-right: 5px;">
+                            🚪 Logout
+                        </button>
+                        <button onclick="goToDashboard()" 
+                                style="background: #2ed573; color: white; padding: 8px 15px; 
+                                       border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                            📊 Dashboard
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(logoutButtonDiv);
+                
+                // Add logout function
+                window.logoutUser = function() {
+                    console.log('🚪 Logout clicked');
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('accessToken');
+                    localStorage.removeItem('refreshToken');
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('isAuthenticated');
+                    sessionStorage.clear();
+                    
+                    alert('✅ Logged out successfully!');
+                    window.location.reload();
+                };
+                
+                // Add dashboard function
+                window.goToDashboard = function() {
+                    try {
+                        const userData = JSON.parse(user);
+                        if (userData.role === 'admin') {
+                            window.location.href = 'admin.html';
+                        } else {
+                            window.location.href = 'dashboard.html';
+                        }
+                    } catch (error) {
+                        window.location.href = 'dashboard.html';
+                    }
+                };
+            } else {
+                console.log('🚪 User is not logged in');
+            }
+        });
+    </script>
 </body>
 </html>

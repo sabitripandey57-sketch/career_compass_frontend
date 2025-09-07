@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
     <div class = "outer-box">
         <div class = "inner-box">
             <header class = "signup-header">
@@ -16,29 +18,40 @@
             </header>
 
             <main class ="signup-body">
-                <form action="#">
+                <div id="error-container"></div>
+                <form id="signup-form">
                     <p>
-                        <label for="Fullname"> Full Name</label>
-                        <input type="text" placeholder="Your Full Name" required>
-                        </p>
-
-                        <p>
-                        <label for="email">Your Email</label>
-        <input type="email" placeholder="Your Email Address" required>
-        </p>
-
-        <p>
-        <label for="number">Your Contact Number</label>
-        <input type="text" placeholder="Your Contact Number" required>
-        </p>
-
-<p>
-        <label for="password"> Enter Your Password</label>
-        <input type="password" placeholder="Your Password" required>
+                        <label for="name"> Full Name</label>
+                        <input type="text" id="name" name="name" placeholder="Your Full Name" required>
                     </p>
 
                     <p>
-                         <input type="submit" value =" Create Account">
+                        <label for="email">Your Email</label>
+                        <input type="email" id="email" name="email" placeholder="Your Email Address" required>
+                    </p>
+
+                    <p>
+                        <label for="phone">Your Contact Number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="Your Contact Number" required>
+                    </p>
+
+                    <p>
+                        <label for="password"> Enter Your Password</label>
+                        <input type="password" id="password" name="password" placeholder="Your Password" required>
+                    </p>
+                    
+                    <p>
+                        <label for="totalMarks">Total Marks (SEE)</label>
+                        <input type="number" id="totalMarks" name="totalMarks" placeholder="Total marks out of 500" min="0" max="500">
+                    </p>
+                    
+                    <p>
+                        <label for="gpa">GPA</label>
+                        <input type="number" id="gpa" name="gpa" placeholder="Your GPA" min="0" max="4" step="0.1">
+                    </p>
+
+                    <p>
+                        <input type="submit" id="signup-btn" value="Create Account">
                     </p>
                 </form>
             </main>
@@ -48,5 +61,62 @@
             </footer>
         </div>
          </div>
+         
+    <script>
+        // Redirect if already logged in
+        if (authManager.redirectIfLoggedIn()) {
+            // User is already logged in, redirect happens in the method
+        }
+        
+        document.getElementById('signup-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                password: document.getElementById('password').value,
+                totalMarks: parseInt(document.getElementById('totalMarks').value) || 0,
+                gpa: parseFloat(document.getElementById('gpa').value) || 0
+            };
+            
+            const signupBtn = document.getElementById('signup-btn');
+            const errorContainer = document.getElementById('error-container');
+            
+            // Clear previous errors
+            errorContainer.innerHTML = '';
+            
+            // Disable button and show loading
+            signupBtn.disabled = true;
+            signupBtn.value = 'Creating Account...';
+            
+            try {
+                const response = await apiService.register(formData);
+                
+                if (response.success !== false) {
+                    showSuccess('Account created successfully! Redirecting...', errorContainer);
+                    
+                    // Redirect based on user role
+                    const user = apiService.getStoredUser();
+                    setTimeout(() => {
+                        if (user && user.role === 'admin') {
+                            window.location.href = 'admin.html';
+                        } else {
+                            window.location.href = 'dashboard.html';
+                        }
+                    }, 1000);
+                } else {
+                    showError(response.message || 'Registration failed', errorContainer);
+                }
+            } catch (error) {
+                showError(error.message || 'Registration failed. Please try again.', errorContainer);
+                console.error('Registration error:', error);
+            } finally {
+                // Re-enable button
+                signupBtn.disabled = false;
+                signupBtn.value = 'Create Account';
+            }
+        });
+    </script>
 </body>
 </html>

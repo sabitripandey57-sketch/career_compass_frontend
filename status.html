@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Status - Career Compass</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .status-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status-item {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .logged-in {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .logged-out {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .logout-btn {
+            background: #ff4757;
+            color: white;
+        }
+        .home-btn {
+            background: #2ed573;
+            color: white;
+        }
+        .login-btn {
+            background: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    
+    <div class="status-container">
+        <h1>🔐 Current Login Status</h1>
+        
+        <div id="status-info">
+            <p>Loading status...</p>
+        </div>
+        
+        <div id="actions">
+            <!-- Action buttons will be populated by JavaScript -->
+        </div>
+        
+        <div class="info status-item">
+            <h3>Navigation Test</h3>
+            <p>The navigation bar should show different content based on your login status:</p>
+            <ul>
+                <li><strong>Logged out:</strong> Home, Colleges, After SEE, After +2, Requirements, Contact, Help, Sign up, Login</li>
+                <li><strong>Logged in (Student):</strong> Home, Colleges, Dashboard, Profile, After SEE, After +2, Contact, Help, User Menu</li>
+                <li><strong>Logged in (Admin):</strong> Home, Colleges, Admin Panel, Contact, Help, User Menu</li>
+            </ul>
+            <button onclick="testNavigation()" style="background: #3498db; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px;">
+                🔍 Test Navigation
+            </button>
+            <div id="nav-test-result" style="margin-top: 10px; padding: 10px; border-radius: 4px;"></div>
+        </div>
+    </div>
+
+    <script>
+        function checkLoginStatus() {
+            const token = localStorage.getItem('token') || localStorage.getItem('accessToken');
+            const user = localStorage.getItem('user');
+            const statusInfo = document.getElementById('status-info');
+            const actions = document.getElementById('actions');
+            
+            if (token && user) {
+                try {
+                    const userData = JSON.parse(user);
+                    statusInfo.innerHTML = `
+                        <div class="status-item logged-in">
+                            <h2>✅ Logged In</h2>
+                            <p><strong>Name:</strong> ${userData.name}</p>
+                            <p><strong>Email:</strong> ${userData.email}</p>
+                            <p><strong>Role:</strong> ${userData.role}</p>
+                            <p><strong>Token:</strong> ${token.substring(0, 20)}...</p>
+                        </div>
+                    `;
+                    
+                    actions.innerHTML = `
+                        <button class="logout-btn" onclick="logoutUser()">🚪 Logout</button>
+                        <button class="home-btn" onclick="goToDashboard()">📊 Dashboard</button>
+                        <button class="home-btn" onclick="window.location.href='index.html'">🏠 Home</button>
+                    `;
+                } catch (error) {
+                    statusInfo.innerHTML = `
+                        <div class="status-item logged-out">
+                            <h2>❌ Invalid Login Data</h2>
+                            <p>User data is corrupted. Please login again.</p>
+                        </div>
+                    `;
+                    
+                    actions.innerHTML = `
+                        <button class="logout-btn" onclick="clearData()">🧹 Clear Data</button>
+                        <button class="login-btn" onclick="window.location.href='login.html'">🔑 Login</button>
+                    `;
+                }
+            } else {
+                statusInfo.innerHTML = `
+                    <div class="status-item logged-out">
+                        <h2>❌ Not Logged In</h2>
+                        <p>No valid login tokens found.</p>
+                    </div>
+                `;
+                
+                actions.innerHTML = `
+                    <button class="login-btn" onclick="window.location.href='login.html'">🔑 Login</button>
+                    <button class="home-btn" onclick="window.location.href='signup.html'">📝 Sign Up</button>
+                    <button class="home-btn" onclick="window.location.href='index.html'">🏠 Home</button>
+                `;
+            }
+        }
+        
+        function logoutUser() {
+            if (window.authManager) {
+                authManager.logout();
+            } else {
+                // Fallback logout
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.href = 'index.html';
+            }
+        }
+        
+        function clearData() {
+            localStorage.clear();
+            sessionStorage.clear();
+            checkLoginStatus();
+        }
+        
+        function goToDashboard() {
+            const user = localStorage.getItem('user');
+            if (user) {
+                try {
+                    const userData = JSON.parse(user);
+                    if (userData.role === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
+                } catch (error) {
+                    window.location.href = 'dashboard.html';
+                }
+            }
+        }
+        
+        // Check status when page loads
+        document.addEventListener('DOMContentLoaded', checkLoginStatus);
+        
+        // Refresh status every 2 seconds
+        setInterval(checkLoginStatus, 2000);
+        
+        function testNavigation() {
+            console.log('🔍 Testing navigation...');
+            const resultDiv = document.getElementById('nav-test-result');
+            const navLinks = document.querySelector('.nav-link ul');
+            
+            if (navLinks) {
+                const links = navLinks.querySelectorAll('li a');
+                const linkTexts = Array.from(links).map(link => link.textContent.trim());
+                
+                resultDiv.innerHTML = `
+                    <h4>✅ Navigation Found:</h4>
+                    <p><strong>Links:</strong> ${linkTexts.join(', ')}</p>
+                    <p><strong>Count:</strong> ${linkTexts.length}</p>
+                    <p><strong>Auth Manager:</strong> ${window.authManager ? '✅ Available' : '❌ Not Found'}</p>
+                `;
+                resultDiv.style.background = '#d4edda';
+                resultDiv.style.color = '#155724';
+                resultDiv.style.border = '1px solid #c3e6cb';
+            } else {
+                resultDiv.innerHTML = `
+                    <h4>❌ Navigation Not Found</h4>
+                    <p>Could not find navigation container with selector '.nav-link ul'</p>
+                `;
+                resultDiv.style.background = '#f8d7da';
+                resultDiv.style.color = '#721c24';
+                resultDiv.style.border = '1px solid #f5c6cb';
+            }
+        }
+    </script>
+</body>
+</html>
